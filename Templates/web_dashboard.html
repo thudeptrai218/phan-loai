@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phan loai trai cay hong</title>
+    <style>
+        :root {
+            --bg: #f4f7f2;
+            --panel: #ffffff;
+            --text: #172016;
+            --muted: #647064;
+            --line: #dfe7dc;
+            --fresh: #238a4b;
+            --fresh-soft: #e7f6ed;
+            --bad: #c83b32;
+            --bad-soft: #fdecea;
+            --accent: #315c2b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        .app {
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 24px 0 32px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .title h1 {
+            margin: 0;
+            font-size: 28px;
+            line-height: 1.2;
+            color: var(--accent);
+        }
+
+        .title p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .status-card {
+            min-width: 190px;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--panel);
+            text-align: right;
+        }
+
+        .status-card span {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .status-card strong {
+            display: block;
+            margin-top: 4px;
+            color: var(--fresh);
+            font-size: 18px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.9fr);
+            gap: 18px;
+            align-items: start;
+        }
+
+        .panel {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--panel);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .panel-header h2 {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 28px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: #eef4ec;
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .video-wrap {
+            position: relative;
+            background: #101510;
+        }
+
+        .video-wrap img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            object-fit: contain;
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            padding: 14px 16px;
+            border-top: 1px solid var(--line);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            flex: 0 0 auto;
+            border-radius: 50%;
+        }
+
+        .dot.fresh {
+            background: var(--fresh);
+        }
+
+        .dot.bad {
+            background: var(--bad);
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .metric {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+        }
+
+        .metric span {
+            display: block;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .metric strong {
+            display: block;
+            margin-top: 8px;
+            font-size: 28px;
+        }
+
+        .metric.fresh {
+            background: var(--fresh-soft);
+        }
+
+        .metric.fresh strong {
+            color: var(--fresh);
+        }
+
+        .metric.bad {
+            background: var(--bad-soft);
+        }
+
+        .metric.bad strong {
+            color: var(--bad);
+        }
+
+        .table-wrap {
+            max-height: 520px;
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--line);
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background: #f8faf7;
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 70px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge.fresh {
+            background: var(--fresh-soft);
+            color: var(--fresh);
+        }
+
+        .badge.bad {
+            background: var(--bad-soft);
+            color: var(--bad);
+        }
+
+        .badge.pending {
+            background: #eef1f4;
+            color: var(--muted);
+        }
+
+        .empty {
+            padding: 28px 16px;
+            color: var(--muted);
+            text-align: center;
+            font-size: 14px;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .status-card {
+                width: 100%;
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .app {
+                width: min(100% - 20px, 1180px);
+                padding-top: 14px;
+            }
+
+            .title h1 {
+                font-size: 22px;
+            }
+
+            .panel-header,
+            .legend,
+            .summary {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .legend,
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+            th,
+            td {
+                padding: 10px 9px;
+                font-size: 13px;
+            }
+        }
+    </style>
+    <script>
+        function getStatusClass(status) {
+            if (status === "Hong") {
+                return "bad";
+            }
+            if (status === "Tot") {
+                return "fresh";
+            }
+            return "pending";
+        }
+
+        function renderHistory(data) {
+            const tableBody = document.getElementById("historyTable");
+            const emptyState = document.getElementById("emptyState");
+            const totalFresh = document.getElementById("totalFresh");
+            const totalBad = document.getElementById("totalBad");
+            const lastStatus = document.getElementById("lastStatus");
+
+            const freshCount = data.filter(item => item.status === "Tot").length;
+            const badCount = data.filter(item => item.status === "Hong").length;
+
+            totalFresh.textContent = freshCount;
+            totalBad.textContent = badCount;
+
+            if (data.length === 0) {
+                tableBody.innerHTML = "";
+                emptyState.style.display = "block";
+                lastStatus.textContent = "Dang cho du lieu";
+                lastStatus.style.color = "var(--muted)";
+                return;
+            }
+
+            emptyState.style.display = "none";
+            const newest = data[data.length - 1];
+            lastStatus.textContent = `${newest.fruit} - ${newest.status}`;
+            lastStatus.style.color = newest.status === "Hong" ? "var(--bad)" : "var(--fresh)";
+
+            tableBody.innerHTML = "";
+            data.slice().reverse().forEach(item => {
+                const statusClass = getStatusClass(item.status);
+                const row = `
+                    <tr>
+                        <td>${item.time}</td>
+                        <td>${item.fruit}</td>
+                        <td><span class="badge ${statusClass}">${item.status || ""}</span></td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        function updateHistory() {
+            fetch("/history")
+                .then(response => response.json())
+                .then(renderHistory)
+                .catch(() => {
+                    const lastStatus = document.getElementById("lastStatus");
+                    lastStatus.textContent = "Mat ket noi";
+                    lastStatus.style.color = "var(--bad)";
+                });
+        }
+
+        window.addEventListener("load", updateHistory);
+        setInterval(updateHistory, 2000);
+    </script>
+</head>
+<body>
+    <main class="app">
+        <header class="topbar">
+            <div class="title">
+                <h1>He thong phan loai trai cay hong</h1>
+                <p>Theo doi camera ESP32-CAM va tach trai cay theo tinh trang.</p>
+            </div>
+            <div class="status-card">
+                <span>Ket qua moi nhat</span>
+                <strong id="lastStatus">Dang cho du lieu</strong>
+            </div>
+        </header>
+
+        <section class="layout">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Camera truc tiep</h2>
+                    <span class="pill">Port 6003</span>
+                </div>
+                <div class="video-wrap">
+                    <img src="{{ url_for('video_feed') }}" alt="Camera Feed">
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <span class="dot fresh"></span>
+                        <span>Khung xanh: trai cay tot</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="dot bad"></span>
+                        <span>Khung do: trai cay hong</span>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="panel">
+                <div class="panel-header">
+                    <h2>Lich su phan loai</h2>
+                    <span class="pill">Cap nhat 2s</span>
+                </div>
+                <div class="summary">
+                    <div class="metric fresh">
+                        <span>Trai cay tot</span>
+                        <strong id="totalFresh">0</strong>
+                    </div>
+                    <div class="metric bad">
+                        <span>Trai cay hong</span>
+                        <strong id="totalBad">0</strong>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Thoi gian</th>
+                                <th>Loai qua</th>
+                                <th>Tinh trang</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTable"></tbody>
+                    </table>
+                    <div id="emptyState" class="empty">Chua co ket qua quet.</div>
+                </div>
+            </aside>
+        </section>
+    </main>
+</body>
+</html>
